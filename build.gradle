@@ -1,0 +1,61 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "https://plugins.gradle.org/m2/" }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'com.wynprice.cursemaven:CurseMaven:2.1.1'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'com.wynprice.cursemaven'
+
+version = "1.12.2-advanced_fishing-0.0.1"
+group = "fr.nightkosh.advanced_fishing"
+archivesBaseName = "advanced_fishing"
+
+sourceCompatibility = targetCompatibility = '1.8'
+compileJava {
+    sourceCompatibility = targetCompatibility = '1.8'
+}
+
+minecraft {
+    version = "1.12.2-14.23.5.2847"
+    runDir = "run"
+
+    mappings = "stable_39"
+    accessTransformer(file('src/main/resources/META-INF/Advanced_Fishing_at.cfg'))
+    // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
+}
+
+repositories {
+    maven {
+        url "http://www.cursemaven.com"
+    }
+}
+
+dependencies {
+    deobfCompile 'curse.maven:baubles-227083:2518667'
+}
+
+jar {
+    manifest.attributes('FMLAT': 'Advanced_Fishing_at.cfg')
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
